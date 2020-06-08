@@ -133,7 +133,7 @@ router.delete('/:title', (req,res,next) => {
            message : "Note Deleted",
            request : {
                type : 'POST',
-               url : 'http://locahost:3001/notes',
+               url : 'http://localhost:3001/notes',
                body : {title : 'String', content : 'String'}
                
            }
