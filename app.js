@@ -9,6 +9,8 @@ const bodyParser = require('body-parser');
 
 const noteRoutes = require('./api/routes/notes');
 
+const bookmarkRoutes = require('./api/routes/bookmarks');
+
 mongoose.connect('mongodb+srv://Rajath:Rajath2000@cluster0-ajgkh.mongodb.net/Cluster0?retryWrites=true&w=majority', {
     useNewUrlParser : true,
     useUnifiedTopology : true
@@ -36,6 +38,7 @@ app.use((req,res,next) =>{
 })
 
 app.use('/notes', noteRoutes);
+app.use('/bookmarks', bookmarkRoutes);
 
 
 //Catch errors

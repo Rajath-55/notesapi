@@ -4,17 +4,17 @@ const router = express.Router();
 
 const mongoose = require('mongoose');
 
-const Note = require('../models/note')
+const Bookmark = require('../models/bookmark')
 
 router.get('/', (req,res,next) => {
     console.log("Get request initiated")
-    Note.find()
+    Bookmark.find()
     .select("title content _id")
     .exec()
     .then(docs => {
         const response = {
             count : docs.length,
-            notes : docs.map(doc => {
+            bookmarks : docs.map(doc => {
                 return {
                     
                     title : doc.title,
@@ -22,7 +22,7 @@ router.get('/', (req,res,next) => {
                     _id : doc.id,
                     request : {
                         type : 'GET',
-                        url : 'http://localhost:3001/notes/' + doc.title
+                        url : 'http://localhost:3001/bookmarks/' + doc.title
                     }
                 }
             })
@@ -38,24 +38,24 @@ router.get('/', (req,res,next) => {
 
 
 router.post('/', (req,res,next) => {
-    const note = new Note ({
+    const bookmark = new Bookmark ({
         
         title : req.body.title,
         content : req.body.content,
         _id : new mongoose.Types.ObjectId()
     });
-    note.save()
+    bookmark.save()
     .then(result => {
         res.status(201).json({
-            message : "New Note added Successfully!",
-            createdNote : {
+            message : "New Bookmark added Successfully!",
+            createdBookmark : {
                 
                 title : result.title,
                 content : result.content,
                 _id : result.id,
                 request : {
                     type : 'GET', 
-                    url : 'http://localhost:3001/notes/' + result.title
+                    url : 'http://localhost:3001/bookmarks/' + result.title
                 }
             }
         })
@@ -65,11 +65,11 @@ router.post('/', (req,res,next) => {
 
 router.get('/:title', (req,res,next) => {
     const title = req.params.title;
-    Note.find()
+    Bookmark.find()
     .exec()
     .then(docs => {
         const response = {
-           note : docs.filter(doc => {
+           bookmark : docs.filter(doc => {
                if(doc.title ===title){
                    return {
                        title : doc.title,
@@ -77,7 +77,7 @@ router.get('/:title', (req,res,next) => {
                        content : doc.content,
                        request : {
                            type : 'GET',
-                           url  : 'http://localhost:3001/notes'
+                           url  : 'http://localhost:3001/bookmarks'
                        }
 
                    }
@@ -102,15 +102,15 @@ router.patch('/:title', (req,res,next) => {
     for(const ops of req.body){
         updateOps[ops.propName] = ops.value;
     }
-    Note.update({title : title}, {$set : updateOps})
+    Bookmark.update({title : title}, {$set : updateOps})
     .exec()
     .then(result => {
         console.log(result);
         res.status(200).json({
-            message : "Note Updated",
+            message : "Bookmark Updated",
             request : {
                 type : 'GET',
-                url : 'http://localhost:3001/notes/'
+                url : 'http://localhost:3001/bookmarks/'
             }
         })
         
@@ -125,15 +125,15 @@ router.patch('/:title', (req,res,next) => {
 
 router.delete('/:title', (req,res,next) => {
     const title = req.params.title;
-    Note.remove({title : title})
+    Bookmark.remove({title : title})
     .exec()
     .then(result => {
        console.log(result);
        res.header(204).json({
-           message : "Note Deleted",
+           message : "Bookmark Deleted",
            request : {
                type : 'POST',
-               url : 'http://locahost:3001/notes',
+               url : 'http://locahost:3001/bookmarks',
                body : {title : 'String', content : 'String'}
                
            }
